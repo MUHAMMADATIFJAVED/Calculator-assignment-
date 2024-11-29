@@ -1,55 +1,30 @@
-let currentInput = '';
-let previousInput = '';
-let operator = null;
+const resultInput = document.getElementById("result");
 
 function appendNumber(number) {
-  currentInput += number;
-  updateDisplay(currentInput);
+    resultInput.value += number;
 }
 
-function setOperation(op) {
-  if (currentInput === '') return;
-  if (previousInput !== '') calculate();
-  operator = op;
-  previousInput = currentInput;
-  currentInput = '';
+function appendOperator(operator) {
+    const lastChar = resultInput.value.slice(-1);
+    if (["+", "-", "*", "/"].includes(lastChar)) {
+        resultInput.value = resultInput.value.slice(0, -1) + operator;
+    } else {
+        resultInput.value += operator;
+    }
 }
 
 function clearDisplay() {
-  currentInput = '';
-  previousInput = '';
-  operator = null;
-  updateDisplay('0');
+    resultInput.value = "";
+}
+
+function deleteLast() {
+    resultInput.value = resultInput.value.slice(0, -1);
 }
 
 function calculate() {
-  if (currentInput === '' || previousInput === '' || !operator) return;
-  const num1 = parseFloat(previousInput);
-  const num2 = parseFloat(currentInput);
-  let result = 0;
-
-  switch (operator) {
-    case '+':
-      result = num1 + num2;
-      break;
-    case '-':
-      result = num1 - num2;
-      break;
-    case '*':
-      result = num1 * num2;
-      break;
-    case '/':
-      result = num2 !== 0 ? num1 / num2 : 'Error';
-      break;
-  }
-
-  updateDisplay(result);
-  currentInput = result.toString();
-  previousInput = '';
-  operator = null;
-}
-
-function updateDisplay(value) {
-  const display = document.getElementById('display');
-  display.value = value;
+    try {
+        resultInput.value = eval(resultInput.value);
+    } catch {
+        resultInput.value = "Error";
+    }
 }
